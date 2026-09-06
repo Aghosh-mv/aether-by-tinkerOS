@@ -20,7 +20,8 @@ import {
   List, 
   Table as TableIcon,
   ChevronDown,
-  Play
+  Play,
+  Plus
 } from 'lucide-react';
 import { Note, AutomationRule } from '../types';
 import { calculateTextMetrics, formatMarkdown } from '../utils/automations';
@@ -33,6 +34,7 @@ interface NoteEditorProps {
   onUpdateNote: (updatedNote: Note) => void;
   onRunAutomation: (ruleId: string, note: Note) => void;
   onOpenSecurityModal: () => void;
+  onNewNote?: () => void;
 }
 
 export const NoteEditor: React.FC<NoteEditorProps> = ({
@@ -42,15 +44,25 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   onUpdateNote,
   onRunAutomation,
   onOpenSecurityModal,
+  onNewNote,
 }) => {
   if (!note) {
     return (
       <div className="flex-1 bg-stone-950 flex flex-col items-center justify-center text-stone-500 p-8 select-none">
         <ShieldCheck className="w-12 h-12 text-stone-700 mb-3" />
-        <p className="text-sm font-medium text-stone-400">No Document Selected</p>
-        <p className="text-xs text-stone-600 mt-1 max-w-sm text-center">
-          Choose a note from the sovereign vault or press <kbd className="bg-stone-800 text-stone-400 px-1 py-0.5 rounded text-[10px]">Cmd+N</kbd> to compose an encrypted record.
+        <p className="text-sm font-medium text-stone-300">No Document Selected</p>
+        <p className="text-xs text-stone-500 mt-1.5 max-w-sm text-center leading-relaxed">
+          Create an encrypted record in your sovereign vault or choose a note from the list.
         </p>
+        {onNewNote && (
+          <button
+            onClick={onNewNote}
+            className="mt-4 inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-stone-950 px-4 py-2 rounded-lg text-xs font-semibold shadow-md transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create New Document</span>
+          </button>
+        )}
       </div>
     );
   }

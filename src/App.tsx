@@ -34,17 +34,44 @@ export default function App() {
   // --- Persistent State Initialization ---
   const [notes, setNotes] = useState<Note[]>(() => {
     const saved = localStorage.getItem('aether_notes');
-    return saved ? JSON.parse(saved) : INITIAL_NOTES;
+    if (saved) {
+      try {
+        const parsed: Note[] = JSON.parse(saved);
+        // Exclude any mock/sample notes to ensure only real user data
+        return parsed.filter(n => !n.id.startsWith('note_welcome') && !n.id.startsWith('note_automations_guide') && !n.id.startsWith('note_daily_clarity'));
+      } catch (e) {
+        return [];
+      }
+    }
+    return INITIAL_NOTES;
   });
 
   const [tasks, setTasks] = useState<TaskItem[]>(() => {
     const saved = localStorage.getItem('aether_tasks');
-    return saved ? JSON.parse(saved) : INITIAL_TASKS;
+    if (saved) {
+      try {
+        const parsed: TaskItem[] = JSON.parse(saved);
+        // Exclude any mock/sample tasks
+        return parsed.filter(t => !t.id.startsWith('task_1') && !t.id.startsWith('task_2') && !t.id.startsWith('task_3') && !t.id.startsWith('task_4'));
+      } catch (e) {
+        return [];
+      }
+    }
+    return INITIAL_TASKS;
   });
 
   const [journal, setJournal] = useState<JournalEntry[]>(() => {
     const saved = localStorage.getItem('aether_journal');
-    return saved ? JSON.parse(saved) : INITIAL_JOURNAL;
+    if (saved) {
+      try {
+        const parsed: JournalEntry[] = JSON.parse(saved);
+        // Exclude any mock/sample journal entries
+        return parsed.filter(j => !j.id.startsWith('journal_1') && !j.id.startsWith('journal_2'));
+      } catch (e) {
+        return [];
+      }
+    }
+    return INITIAL_JOURNAL;
   });
 
   const [automations, setAutomations] = useState<AutomationRule[]>(() => {
@@ -435,6 +462,7 @@ export default function App() {
                 onUpdateNote={handleUpdateNote}
                 onRunAutomation={(ruleId, n) => handleRunAutomationOnNote(ruleId, n)}
                 onOpenSecurityModal={() => setIsSecurityModalOpen(true)}
+                onNewNote={handleCreateNewNote}
               />
             </>
           )}
